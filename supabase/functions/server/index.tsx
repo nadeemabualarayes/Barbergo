@@ -25,7 +25,7 @@ function generateId() {
 }
 
 // Health check endpoint
-app.get("/health", (c) => {
+app.get("/make-server-0bdf1ecf/health", (c) => {
   return c.json({ status: "ok" });
 });
 
@@ -34,7 +34,7 @@ app.get("/health", (c) => {
 // ============================================
 
 // Get all barbers
-app.get("/barbers", async (c) => {
+app.get("/make-server-0bdf1ecf/barbers", async (c) => {
   try {
     const barbers = await kv.getByPrefix("barber:");
     return c.json(barbers);
@@ -45,7 +45,7 @@ app.get("/barbers", async (c) => {
 });
 
 // Create barber
-app.post("/barbers", async (c) => {
+app.post("/make-server-0bdf1ecf/barbers", async (c) => {
   try {
     const body = await c.req.json();
     const id = generateId();
@@ -63,7 +63,7 @@ app.post("/barbers", async (c) => {
 });
 
 // Update barber
-app.put("/barbers/:id", async (c) => {
+app.put("/make-server-0bdf1ecf/barbers/:id", async (c) => {
   try {
     const id = c.req.param("id");
     const body = await c.req.json();
@@ -81,7 +81,7 @@ app.put("/barbers/:id", async (c) => {
 });
 
 // Delete barber
-app.delete("/barbers/:id", async (c) => {
+app.delete("/make-server-0bdf1ecf/barbers/:id", async (c) => {
   try {
     const id = c.req.param("id");
     await kv.del(`barber:${id}`);
@@ -97,7 +97,7 @@ app.delete("/barbers/:id", async (c) => {
 // ============================================
 
 // Get all services
-app.get("/services", async (c) => {
+app.get("/make-server-0bdf1ecf/services", async (c) => {
   try {
     const services = await kv.getByPrefix("service:");
     return c.json(services);
@@ -108,7 +108,7 @@ app.get("/services", async (c) => {
 });
 
 // Create service
-app.post("/services", async (c) => {
+app.post("/make-server-0bdf1ecf/services", async (c) => {
   try {
     const body = await c.req.json();
     const id = generateId();
@@ -126,7 +126,7 @@ app.post("/services", async (c) => {
 });
 
 // Update service
-app.put("/services/:id", async (c) => {
+app.put("/make-server-0bdf1ecf/services/:id", async (c) => {
   try {
     const id = c.req.param("id");
     const body = await c.req.json();
@@ -144,7 +144,7 @@ app.put("/services/:id", async (c) => {
 });
 
 // Delete service
-app.delete("/services/:id", async (c) => {
+app.delete("/make-server-0bdf1ecf/services/:id", async (c) => {
   try {
     const id = c.req.param("id");
     await kv.del(`service:${id}`);
@@ -160,7 +160,7 @@ app.delete("/services/:id", async (c) => {
 // ============================================
 
 // Get appointments (with optional filters)
-app.get("/appointments", async (c) => {
+app.get("/make-server-0bdf1ecf/appointments", async (c) => {
   try {
     const date = c.req.query("date");
     const barber_id = c.req.query("barber_id");
@@ -193,7 +193,7 @@ app.get("/appointments", async (c) => {
 });
 
 // Create appointment
-app.post("/appointments", async (c) => {
+app.post("/make-server-0bdf1ecf/appointments", async (c) => {
   try {
     const body = await c.req.json();
     const id = generateId();
@@ -248,7 +248,7 @@ app.post("/appointments", async (c) => {
 });
 
 // Update appointment
-app.put("/appointments/:id", async (c) => {
+app.put("/make-server-0bdf1ecf/appointments/:id", async (c) => {
   try {
     const id = c.req.param("id");
     const body = await c.req.json();
@@ -281,7 +281,7 @@ app.put("/appointments/:id", async (c) => {
 });
 
 // Delete appointment
-app.delete("/appointments/:id", async (c) => {
+app.delete("/make-server-0bdf1ecf/appointments/:id", async (c) => {
   try {
     const id = c.req.param("id");
     await kv.del(`appointment:${id}`);
@@ -296,7 +296,7 @@ app.delete("/appointments/:id", async (c) => {
 // AVAILABILITY CHECK
 // ============================================
 
-app.get("/availability/:barberId", async (c) => {
+app.get("/make-server-0bdf1ecf/availability/:barberId", async (c) => {
   try {
     const barberId = c.req.param("barberId");
     const date = c.req.query("date");
@@ -362,7 +362,7 @@ app.get("/availability/:barberId", async (c) => {
 // CUSTOMERS ENDPOINTS
 // ============================================
 
-app.get("/customers", async (c) => {
+app.get("/make-server-0bdf1ecf/customers", async (c) => {
   try {
     const customers = await kv.getByPrefix("customer:");
     return c.json(customers);
@@ -373,7 +373,7 @@ app.get("/customers", async (c) => {
 });
 
 // Create customer
-app.post("/customers", async (c) => {
+app.post("/make-server-0bdf1ecf/customers", async (c) => {
   try {
     const body = await c.req.json();
     const customer = {
@@ -392,7 +392,7 @@ app.post("/customers", async (c) => {
 // ANALYTICS ENDPOINTS
 // ============================================
 
-app.get("/analytics", async (c) => {
+app.get("/make-server-0bdf1ecf/analytics", async (c) => {
   try {
     const start_date = c.req.query("start_date");
     const end_date = c.req.query("end_date");
