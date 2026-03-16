@@ -82,14 +82,16 @@ BarberGo now has **three separate portals** running in one React application:
 ### Barber Portal
 ```
 1. Admin creates barber in Admin Portal
-2. Admin sets up Supabase Auth credentials
-3. Barber receives email/password
-4. Barber logs in via `/barber/login`
-5. Role validation (must be 'barber')
-6. Redirects to `/barber/dashboard`
+2. Admin clicks "Setup Login" on barber card
+3. Admin generates/sets password
+4. System creates Supabase Auth user (role: 'barber')
+5. Admin copies credentials and shares with barber
+6. Barber logs in via `/barber/login`
+7. Role validation (must be 'barber')
+8. Redirects to `/barber/dashboard`
 ```
 
-**Important**: Barbers cannot sign up themselves - credentials are managed by admin.
+**Important**: Barbers cannot sign up themselves - credentials are managed by admin via the "Setup Login" feature.
 
 ---
 
@@ -183,15 +185,14 @@ Value: {
 
 ## 🚀 Next Steps to Implement
 
-### Customer Portal - Phase 2
-- [ ] Booking flow:
-  - [ ] Select services page
-  - [ ] Choose barber page
-  - [ ] Pick date/time page
-  - [ ] Booking confirmation
+### Customer Portal - COMPLETED ✅
+- [x] Booking flow:
+  - [x] Select services page
+  - [x] Choose barber page
+  - [x] Pick date/time page
+  - [x] Booking confirmation
 - [ ] My Appointments page
 - [ ] Profile management page
-- [ ] View appointment history
 
 ### Barber Portal - Phase 2
 - [ ] Weekly schedule calendar
@@ -199,6 +200,10 @@ Value: {
 - [ ] Customer notes/history
 - [ ] Break management
 - [ ] Notification preferences
+
+### Admin Portal - COMPLETED ✅
+- [x] Barber credential management ("Setup Login" feature)
+- [x] All CRUD operations for barbers, services, customers, appointments
 
 ### Shared Features
 - [ ] Push notifications

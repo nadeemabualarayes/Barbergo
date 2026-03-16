@@ -14,9 +14,10 @@ import {
 import { Label } from './ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Switch } from './ui/switch';
-import { Plus, Search, Star, DollarSign, Clock, Trash2, Edit } from 'lucide-react';
+import { Plus, Search, Star, DollarSign, Clock, Trash2, Edit, Key } from 'lucide-react';
 import { getBarbers, createBarber, updateBarber, deleteBarber } from '../lib/api';
 import { toast } from 'sonner';
+import { SetupCredentialsDialog } from './SetupCredentialsDialog';
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const SPECIALTIES = [
@@ -31,6 +32,8 @@ export function Barbers() {
   const [searchTerm, setSearchTerm] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBarber, setEditingBarber] = useState<any>(null);
+  const [credentialsDialogOpen, setCredentialsDialogOpen] = useState(false);
+  const [selectedBarber, setSelectedBarber] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -423,6 +426,20 @@ export function Barbers() {
 
                 <div className="flex gap-2 pt-2">
                   <Button
+                    variant="default"
+                    size="sm"
+                    className="flex-1 bg-green-600 hover:bg-green-700"
+                    onClick={() => {
+                      setSelectedBarber(barber);
+                      setCredentialsDialogOpen(true);
+                    }}
+                  >
+                    <Key className="w-4 h-4 mr-1" />
+                    Setup Login
+                  </Button>
+                </div>
+                <div className="flex gap-2">
+                  <Button
                     variant="outline"
                     size="sm"
                     className="flex-1"
@@ -445,6 +462,15 @@ export function Barbers() {
           ))
         )}
       </div>
+      
+      {/* Setup Credentials Dialog */}
+      {selectedBarber && (
+        <SetupCredentialsDialog
+          open={credentialsDialogOpen}
+          onOpenChange={setCredentialsDialogOpen}
+          barber={selectedBarber}
+        />
+      )}
     </div>
   );
 }

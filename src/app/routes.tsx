@@ -16,6 +16,10 @@ import { CustomerLogin } from "./components/customer/CustomerLogin";
 import { CustomerSignup } from "./components/customer/CustomerSignup";
 import { CustomerRoot } from "./components/customer/CustomerRoot";
 import { CustomerHome } from "./components/customer/CustomerHome";
+import { SelectServicesPage } from "./components/customer/SelectServicesPage";
+import { SelectBarberPage } from "./components/customer/SelectBarberPage";
+import { SelectTimePage } from "./components/customer/SelectTimePage";
+import { BookingConfirmation } from "./components/customer/BookingConfirmation";
 
 // Barber Portal
 import { BarberLogin } from "./components/barber/BarberLogin";
@@ -63,6 +67,10 @@ export const router = createBrowserRouter([
     Component: CustomerRoot,
     children: [
       { path: "home", Component: CustomerHome },
+      { path: "book", Component: SelectServicesPage },
+      { path: "book/select-barber", Component: SelectBarberPage },
+      { path: "book/select-time", Component: SelectTimePage },
+      { path: "book/confirm", Component: BookingConfirmation },
       { path: "*", Component: NotFound },
     ],
   },
