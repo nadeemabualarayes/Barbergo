@@ -83,8 +83,16 @@ export function CustomerSignup() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create customer profile');
+        let errorMessage = 'Failed to create customer profile';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch (e) {
+          // If response is not JSON, get text instead
+          const errorText = await response.text();
+          errorMessage = errorText || `API Error: ${response.status}`;
+        }
+        throw new Error(errorMessage);
       }
 
       // Auto sign in
