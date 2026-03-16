@@ -5,16 +5,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { Badge } from '../ui/badge';
 import { Checkbox } from '../ui/checkbox';
 import { ArrowLeft, Clock, DollarSign, Check } from 'lucide-react';
-import { projectId, publicAnonKey } from '/utils/supabase/info';
+import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
 
 interface Service {
   id: string;
-  name: string;
+  title: string;
   category: string;
-  duration: number;
+  duration_minutes: number;
   price: number;
   description: string;
-  isActive: boolean;
+  is_active: boolean;
 }
 
 export function SelectServicesPage() {
@@ -38,7 +38,7 @@ export function SelectServicesPage() {
         }
       );
       const data = await response.json();
-      const activeServices = data.filter((s: any) => s.isActive);
+      const activeServices = data.filter((s: any) => s.is_active);
       setServices(activeServices);
     } catch (error) {
       console.error('Error loading services:', error);
@@ -46,48 +46,48 @@ export function SelectServicesPage() {
       setServices([
         {
           id: '1',
-          name: 'Classic Haircut',
+          title: 'Classic Haircut',
           category: 'Barbering',
-          duration: 30,
+          duration_minutes: 30,
           price: 35,
           description: 'Traditional haircut with styling',
-          isActive: true,
+          is_active: true,
         },
         {
           id: '2',
-          name: 'Fade & Haircut',
+          title: 'Fade & Haircut',
           category: 'Barbering',
-          duration: 45,
+          duration_minutes: 45,
           price: 45,
           description: 'Modern fade with haircut',
-          isActive: true,
+          is_active: true,
         },
         {
           id: '3',
-          name: 'Beard Trim',
+          title: 'Beard Trim',
           category: 'Barbering',
-          duration: 20,
+          duration_minutes: 20,
           price: 20,
           description: 'Professional beard shaping and trim',
-          isActive: true,
+          is_active: true,
         },
         {
           id: '4',
-          name: 'Cupping Therapy',
+          title: 'Cupping Therapy',
           category: 'Cupping',
-          duration: 60,
+          duration_minutes: 60,
           price: 80,
           description: 'Traditional hijama cupping treatment',
-          isActive: true,
+          is_active: true,
         },
         {
           id: '5',
-          name: 'Facial Treatment',
+          title: 'Facial Treatment',
           category: 'Skin Care',
-          duration: 45,
+          duration_minutes: 45,
           price: 60,
           description: 'Deep cleansing facial',
-          isActive: true,
+          is_active: true,
         },
       ]);
     } finally {
@@ -103,7 +103,7 @@ export function SelectServicesPage() {
     }
   };
 
-  const totalDuration = selectedServices.reduce((sum, s) => sum + s.duration, 0);
+  const totalDuration = selectedServices.reduce((sum, s) => sum + s.duration_minutes, 0);
   const totalPrice = selectedServices.reduce((sum, s) => sum + s.price, 0);
 
   const handleContinue = () => {
@@ -184,12 +184,12 @@ export function SelectServicesPage() {
                         <div className="flex-1">
                           <div className="flex items-start justify-between">
                             <div>
-                              <h3 className="font-semibold text-slate-900">{service.name}</h3>
+                              <h3 className="font-semibold text-slate-900">{service.title}</h3>
                               <p className="text-sm text-slate-600 mt-1">{service.description}</p>
                               <div className="flex items-center gap-4 mt-2">
                                 <span className="flex items-center text-sm text-slate-700">
                                   <Clock className="w-4 h-4 mr-1" />
-                                  {service.duration} min
+                                  {service.duration_minutes} min
                                 </span>
                                 <span className="flex items-center text-sm font-semibold text-green-700">
                                   <DollarSign className="w-4 h-4 mr-1" />

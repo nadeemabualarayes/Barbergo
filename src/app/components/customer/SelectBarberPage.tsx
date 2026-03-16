@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { ArrowLeft, Star, Check } from 'lucide-react';
-import { projectId, publicAnonKey } from '/utils/supabase/info';
+import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
 
 interface Barber {
   id: string;
@@ -13,7 +13,7 @@ interface Barber {
   phone: string;
   specialties: string[];
   rating: number;
-  workingHours: any[];
+  working_hours: any[];
 }
 
 export function SelectBarberPage() {
@@ -57,7 +57,7 @@ export function SelectBarberPage() {
           phone: '+966 50 123 4567',
           specialties: ['Barbering', 'Cupping'],
           rating: 4.8,
-          workingHours: [],
+          working_hours: [],
         },
         {
           id: '2',
@@ -66,7 +66,7 @@ export function SelectBarberPage() {
           phone: '+966 55 987 6543',
           specialties: ['Barbering', 'Skin Care'],
           rating: 4.9,
-          workingHours: [],
+          working_hours: [],
         },
       ]);
     } finally {
@@ -124,7 +124,7 @@ export function SelectBarberPage() {
           className={`cursor-pointer transition-all ${
             selectedBarber?.id === 'any' ? 'ring-2 ring-red-600 bg-red-50' : 'hover:shadow-md'
           }`}
-          onClick={() => setSelectedBarber({ id: 'any', name: 'Any Available Barber', email: '', phone: '', specialties: [], rating: 5, workingHours: [] })}
+          onClick={() => setSelectedBarber({ id: 'any', name: 'Any Available Barber', email: '', phone: '', specialties: [], rating: 5, working_hours: [] })}
         >
           <CardContent className="p-4">
             <div className="flex items-center gap-4">

@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import { Alert, AlertDescription } from '../ui/alert';
 import { ArrowLeft, Calendar, Clock, User, Scissors, DollarSign, Loader2, CheckCircle } from 'lucide-react';
-import { projectId, publicAnonKey } from '/utils/supabase/info';
+import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
 
 export function BookingConfirmation() {
   const navigate = useNavigate();
@@ -31,8 +31,8 @@ export function BookingConfirmation() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      const totalDuration = bookingData.services.reduce((sum: number, s: any) => sum + s.duration, 0);
-      const totalPrice = bookingData.services.reduce((sum: number, s: any) => sum + s.price, 0);
+      const totalDuration = bookingData.services.reduce((sum: number, s: any) => sum + (s.duration_minutes || s.duration || 0), 0);
+      const totalPrice = bookingData.services.reduce((sum: number, s: any) => sum + (s.price || 0), 0);
 
       // Calculate end time
       const [hours, minutes] = bookingData.time.split(':').map(Number);
@@ -41,28 +41,30 @@ export function BookingConfirmation() {
       const endTime = `${endHours.toString().padStart(2, '0')}:${(endMinutes % 60).toString().padStart(2, '0')}`;
 
       const appointmentData = {
-        customerId: user.id,
-        customerName: user.user_metadata?.name || 'Customer',
-        customerPhone: user.user_metadata?.phone || '',
-        customerEmail: user.email || '',
-        barberId: bookingData.barber.id === 'any' ? 'any' : bookingData.barber.id,
-        barberName: bookingData.barber.name,
+        customer_id: user.id,
+        customer_name: user.user_metadata?.name || 'Customer',
+        customer_phone: user.user_metadata?.phone || '',
+        customer_email: user.email || '',
+        barber_id: bookingData.barber.id === 'any' ? 'any' : bookingData.barber.id,
+        barber_name: bookingData.barber.name,
         services: bookingData.services.map((s: any) => ({
           id: s.id,
-          name: s.name,
-          duration: s.duration,
+          title: s.title || s.name,
+          duration_minutes: s.duration_minutes || s.duration,
           price: s.price,
           category: s.category,
         })),
+        service_ids: bookingData.services.map((s: any) => s.id),
+        service_titles: bookingData.services.map((s: any) => s.title || s.name),
         date: bookingData.date,
-        startTime: bookingData.time,
-        endTime: endTime,
-        totalDuration,
-        totalPrice,
+        start_time: new Date(`${bookingData.date}T${bookingData.time}`).toISOString(),
+        end_time: new Date(new Date(`${bookingData.date}T${bookingData.time}`).getTime() + totalDuration * 60000).toISOString(),
+        total_duration: totalDuration,
+        total_price: totalPrice,
         status: 'pending',
+        payment_status: 'pending',
         notes: '',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        created_at: new Date().toISOString(),
       };
 
       const response = await fetch(
@@ -133,8 +135,8 @@ export function BookingConfirmation() {
     );
   }
 
-  const totalDuration = bookingData.services.reduce((sum: number, s: any) => sum + s.duration, 0);
-  const totalPrice = bookingData.services.reduce((sum: number, s: any) => sum + s.price, 0);
+  const totalDuration = bookingData.services.reduce((sum: number, s: any) => sum + (s.duration_minutes || s.duration || 0), 0);
+  const totalPrice = bookingData.services.reduce((sum: number, s: any) => sum + (s.price || 0), 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 pb-24">
@@ -206,8 +208,8 @@ export function BookingConfirmation() {
                         className="flex items-center justify-between p-3 bg-slate-50 rounded-lg"
                       >
                         <div>
-                          <p className="font-medium text-slate-900">{service.name}</p>
-                          <p className="text-sm text-slate-600">{service.duration} minutes</p>
+                          <p className="font-medium text-slate-900">{service.title || service.name}</p>
+                          <p className="text-sm text-slate-600">{service.duration_minutes || service.duration} minutes</p>
                         </div>
                         <p className="font-semibold text-green-700">${service.price}</p>
                       </div>

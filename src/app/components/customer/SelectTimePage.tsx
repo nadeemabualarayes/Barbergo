@@ -76,8 +76,8 @@ export function SelectTimePage() {
     navigate('/customer/book/confirm');
   };
 
-  const totalDuration = selectedServices.reduce((sum: number, s: any) => sum + s.duration, 0);
-  const totalPrice = selectedServices.reduce((sum: number, s: any) => sum + s.price, 0);
+  const totalDuration = selectedServices.reduce((sum: number, s: any) => sum + (s.duration_minutes || s.duration || 0), 0);
+  const totalPrice = selectedServices.reduce((sum: number, s: any) => sum + (s.price || 0), 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 pb-24">
@@ -159,7 +159,7 @@ export function SelectTimePage() {
               <div>
                 <p className="text-sm text-slate-600">Services</p>
                 <p className="font-medium">
-                  {selectedServices.map(s => s.name).join(', ')}
+                  {selectedServices.map(s => s.title || s.name).join(', ')}
                 </p>
               </div>
               <div>

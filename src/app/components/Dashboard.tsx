@@ -38,7 +38,7 @@ export function Dashboard() {
 
       const todayRevenue = appointments
         .filter((apt: any) => apt.status === 'completed')
-        .reduce((sum: number, apt: any) => sum + apt.total_price, 0);
+        .reduce((sum: number, apt: any) => sum + (apt.total_price || apt.totalPrice || 0), 0);
 
       const completedCount = appointments.filter((apt: any) => apt.status === 'completed').length;
       const completionRate = appointments.length > 0 
@@ -47,7 +47,16 @@ export function Dashboard() {
 
       const upcoming = appointments
         .filter((apt: any) => apt.status === 'pending' || apt.status === 'confirmed')
-        .sort((a: any, b: any) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
+        .sort((a: any, b: any) => {
+          const parseDate = (apt: any) => {
+            const raw = apt.start_time || apt.startTime;
+            if (!raw) return new Date(0);
+            let d = new Date(raw);
+            if (isNaN(d.getTime())) d = new Date(`${apt.date}T${raw}`);
+            return isNaN(d.getTime()) ? new Date(0) : d;
+          };
+          return parseDate(a).getTime() - parseDate(b).getTime();
+        })
         .slice(0, 5);
 
       setStats({
@@ -182,33 +191,50 @@ export function Dashboard() {
             <p className="text-gray-500 text-center py-8">No upcoming appointments</p>
           ) : (
             <div className="space-y-4">
-              {stats.upcomingAppointments.map((appointment) => (
-                <div
-                  key={appointment.id}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
-                      {appointment.customer_name.charAt(0)}
+              {stats.upcomingAppointments.map((appointment) => {
+                const customerName = appointment.customer_name || appointment.customerName || 'Customer';
+                const barberName = appointment.barber_name || appointment.barberName || 'Barber';
+                const serviceTitles = appointment.service_titles || appointment.serviceTitles || (appointment.services?.map((s: any) => s.title || s.name) || []);
+                const totalPrice = appointment.total_price || appointment.totalPrice || 0;
+                
+                let formattedTime = 'TBD';
+                try {
+                  const raw = appointment.start_time || appointment.startTime;
+                  if (raw) {
+                    let d = new Date(raw);
+                    if (isNaN(d.getTime())) d = new Date(`${appointment.date}T${raw}`);
+                    if (!isNaN(d.getTime())) formattedTime = format(d, 'h:mm a');
+                  }
+                } catch (e) {}
+
+                return (
+                  <div
+                    key={appointment.id}
+                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                        {customerName.charAt(0) || 'C'}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900">{customerName}</p>
+                        <p className="text-sm text-gray-600">
+                          {serviceTitles.join(', ')} • {barberName}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {formattedTime}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-semibold text-gray-900">{appointment.customer_name}</p>
-                      <p className="text-sm text-gray-600">
-                        {appointment.service_titles.join(', ')} • {appointment.barber_name}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {format(new Date(appointment.start_time), 'h:mm a')}
-                      </p>
+                    <div className="flex items-center gap-3">
+                      <span className="text-lg font-bold text-gray-900">
+                        ${totalPrice}
+                      </span>
+                      {getStatusIcon(appointment.status)}
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg font-bold text-gray-900">
-                      ${appointment.total_price}
-                    </span>
-                    {getStatusIcon(appointment.status)}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </CardContent>

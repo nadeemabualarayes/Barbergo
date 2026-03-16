@@ -170,8 +170,10 @@ export function Appointments() {
   };
 
   const filteredAppointments = appointments.filter(apt => {
-    const matchesSearch = apt.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          apt.barber_name.toLowerCase().includes(searchTerm.toLowerCase());
+    const customerName = apt.customer_name || apt.customerName || '';
+    const barberName = apt.barber_name || apt.barberName || '';
+    const matchesSearch = customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          barberName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || apt.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -352,44 +354,79 @@ export function Appointments() {
             </CardContent>
           </Card>
         ) : (
-          filteredAppointments.map((appointment) => (
-            <Card key={appointment.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0">
-                      {appointment.customer_name.charAt(0)}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-gray-900">{appointment.customer_name}</h3>
-                        <Badge className={getStatusColor(appointment.status)}>
-                          {appointment.status}
-                        </Badge>
+          filteredAppointments.map((appointment) => {
+            const customerName = appointment.customer_name || appointment.customerName || 'Customer';
+            const barberName = appointment.barber_name || appointment.barberName || 'Barber';
+            const customerPhone = appointment.customer_phone || appointment.customerPhone || 'N/A';
+            const totalDuration = appointment.total_duration || appointment.totalDuration || 0;
+            const totalPrice = appointment.total_price || appointment.totalPrice || 0;
+            const serviceTitles = appointment.service_titles || appointment.serviceTitles || (appointment.services?.map((s: any) => s.title || s.name) || []);
+
+            // Safe date parsing
+            let formattedDate = 'Date TBD';
+            let formattedTime = '';
+            try {
+              const rawStartTime = appointment.start_time || appointment.startTime;
+              if (rawStartTime) {
+                let dateObj = new Date(rawStartTime);
+                
+                // Check if rawStartTime is just a time string (e.g., "15:30")
+                if (isNaN(dateObj.getTime()) || (typeof rawStartTime === 'string' && !rawStartTime.includes('-') && rawStartTime.includes(':'))) {
+                  const dateStr = appointment.date || new Date().toISOString().split('T')[0];
+                  dateObj = new Date(`${dateStr}T${rawStartTime}`);
+                }
+
+                if (!isNaN(dateObj.getTime())) {
+                  formattedDate = format(dateObj, 'MMM dd, yyyy');
+                  formattedTime = format(dateObj, 'h:mm a');
+                }
+              }
+            } catch (err) {
+              console.error('Error parsing date:', err);
+            }
+
+            return (
+              <Card key={appointment.id} className="hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0">
+                        {customerName.charAt(0)}
                       </div>
-                      <p className="text-sm text-gray-600 mb-2">{appointment.customer_phone}</p>
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          {format(new Date(appointment.start_time), 'MMM dd, yyyy')} at {format(new Date(appointment.start_time), 'h:mm a')}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-semibold text-gray-900">{customerName}</h3>
+                          <Badge className={getStatusColor(appointment.status)}>
+                            {appointment.status}
+                          </Badge>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          {appointment.total_duration} mins
+                        <p className="text-sm text-gray-600 mb-2">{customerPhone}</p>
+                        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4" />
+                            {formattedTime ? (
+                              <>
+                                {formattedDate} at {formattedTime}
+                              </>
+                            ) : formattedDate}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            {totalDuration} mins
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <DollarSign className="w-4 h-4" />
+                            ${totalPrice}
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <DollarSign className="w-4 h-4" />
-                          ${appointment.total_price}
-                        </div>
+                        <p className="text-sm text-gray-700 mt-2">
+                          <span className="font-medium">Barber:</span> {barberName}
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          <span className="font-medium">Services:</span> {serviceTitles.join(', ')}
+                        </p>
                       </div>
-                      <p className="text-sm text-gray-700 mt-2">
-                        <span className="font-medium">Barber:</span> {appointment.barber_name}
-                      </p>
-                      <p className="text-sm text-gray-700">
-                        <span className="font-medium">Services:</span> {appointment.service_titles.join(', ')}
-                      </p>
                     </div>
-                  </div>
                   <div className="flex flex-col gap-2 md:items-end">
                     <Select
                       value={appointment.status}
@@ -413,8 +450,9 @@ export function Appointments() {
                 </div>
               </CardContent>
             </Card>
-          ))
-        )}
+          );
+        })
+      )}
       </div>
     </div>
   );
