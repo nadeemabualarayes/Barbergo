@@ -21,7 +21,7 @@ export function Login() {
     setTimeout(() => {
       localStorage.setItem('barbergo_auth', 'true');
       toast.success('Login successful!');
-      navigate('/');
+      navigate('/admin');
       setLoading(false);
     }, 1000);
   };

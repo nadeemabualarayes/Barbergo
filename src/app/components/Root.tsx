@@ -15,13 +15,13 @@ import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Appointments', href: '/appointments', icon: Calendar },
-  { name: 'Barbers', href: '/barbers', icon: Scissors },
-  { name: 'Services', href: '/services', icon: Briefcase },
-  { name: 'Customers', href: '/customers', icon: Users },
-  { name: 'Analytics', href: '/analytics', icon: BarChart3 },
-  { name: 'Settings', href: '/settings', icon: Settings },
+  { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'Appointments', href: '/admin/appointments', icon: Calendar },
+  { name: 'Barbers', href: '/admin/barbers', icon: Scissors },
+  { name: 'Services', href: '/admin/services', icon: Briefcase },
+  { name: 'Customers', href: '/admin/customers', icon: Users },
+  { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
+  { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
 
 export function Root() {

@@ -372,6 +372,22 @@ app.get("/make-server-0bdf1ecf/customers", async (c) => {
   }
 });
 
+// Create customer
+app.post("/make-server-0bdf1ecf/customers", async (c) => {
+  try {
+    const body = await c.req.json();
+    const customer = {
+      ...body,
+      created_at: body.createdAt || new Date().toISOString(),
+    };
+    await kv.set(`customer:${customer.id}`, customer);
+    return c.json(customer, 201);
+  } catch (error) {
+    console.error("Error creating customer:", error);
+    return c.json({ error: "Failed to create customer" }, 500);
+  }
+});
+
 // ============================================
 // ANALYTICS ENDPOINTS
 // ============================================
