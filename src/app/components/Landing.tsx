@@ -17,6 +17,7 @@ export function Landing() {
           heroDescription: 'نظامك المتكامل لإدارة أعمال الحلاقة والحجامة والعناية بالبشرة',
           customerPortal: 'بوابة العملاء',
           customerDescription: 'احجز مواعيدك وأدر جلسات العناية الخاصة بك',
+          bookAppointment: 'احجز موعدا',
           barberPortal: 'بوابة الحلاقين',
           barberDescription: 'أدر قائمة اليوم وتابع أرباحك',
           adminPortal: 'بوابة الإدارة',
@@ -40,6 +41,7 @@ export function Landing() {
             'Your complete business management system for barbering, cupping (hajama), and skin care services',
           customerPortal: 'Customer Portal',
           customerDescription: 'Book appointments and manage your grooming sessions',
+          bookAppointment: 'Book Appointment',
           barberPortal: 'Barber Portal',
           barberDescription: 'Manage your daily queue and track earnings',
           adminPortal: 'Admin Portal',
@@ -92,15 +94,8 @@ export function Landing() {
               <CardDescription className="text-slate-400">{copy.customerDescription}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button className="w-full bg-red-600 hover:bg-red-700" onClick={() => navigate('/customer/login')}>
-                {locale === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full border-slate-600 text-slate-300 hover:bg-slate-700"
-                onClick={() => navigate('/customer/signup')}
-              >
-                {locale === 'ar' ? 'إنشاء حساب' : 'Create Account'}
+              <Button className="w-full bg-red-600 hover:bg-red-700" onClick={() => navigate('/customer/book')}>
+                {copy.bookAppointment}
               </Button>
             </CardContent>
           </Card>
