@@ -110,7 +110,7 @@ export function Dashboard() {
     },
     {
       title: 'Today\'s Revenue',
-      value: `$${stats.todayRevenue}`,
+      value: `₪${stats.todayRevenue}`,
       icon: DollarSign,
       color: 'text-green-600',
       bgColor: 'bg-green-50',
@@ -228,7 +228,7 @@ export function Dashboard() {
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="text-lg font-bold text-gray-900">
-                        ${totalPrice}
+                        ₪{totalPrice}
                       </span>
                       {getStatusIcon(appointment.status)}
                     </div>

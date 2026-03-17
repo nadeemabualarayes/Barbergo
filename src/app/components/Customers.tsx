@@ -133,7 +133,7 @@ export function Customers() {
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Revenue</p>
                 <p className="text-3xl font-bold text-gray-900 mt-2">
-                  ${customers.reduce((sum, c) => sum + c.total_spent, 0)}
+                  ₪{customers.reduce((sum, c) => sum + c.total_spent, 0)}
                 </p>
               </div>
               <DollarSign className="w-8 h-8 text-green-600" />
@@ -216,7 +216,7 @@ export function Customers() {
                           <span className="font-semibold text-gray-900">{customer.total_visits}</span>
                         </td>
                         <td className="py-4 px-4 text-center">
-                          <span className="font-semibold text-green-700">${customer.total_spent}</span>
+                          <span className="font-semibold text-green-700">₪{customer.total_spent}</span>
                         </td>
                         <td className="py-4 px-4 text-center">
                           <Badge className={tier.color}>{tier.label}</Badge>

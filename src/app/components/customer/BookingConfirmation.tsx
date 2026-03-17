@@ -211,7 +211,7 @@ export function BookingConfirmation() {
                           <p className="font-medium text-slate-900">{service.title || service.name}</p>
                           <p className="text-sm text-slate-600">{service.duration_minutes || service.duration} minutes</p>
                         </div>
-                        <p className="font-semibold text-green-700">${service.price}</p>
+                        <p className="font-semibold text-green-700">₪{service.price}</p>
                       </div>
                     ))}
                   </div>
@@ -228,7 +228,7 @@ export function BookingConfirmation() {
                   </div>
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-slate-600">Total Price</p>
-                    <p className="text-2xl font-bold text-green-700">${totalPrice}</p>
+                    <p className="text-2xl font-bold text-green-700">₪{totalPrice}</p>
                   </div>
                 </div>
               </div>

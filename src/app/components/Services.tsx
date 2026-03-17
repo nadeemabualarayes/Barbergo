@@ -237,7 +237,7 @@ export function Services() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="price">Price ($) *</Label>
+                  <Label htmlFor="price">Price (₪) *</Label>
                   <Input
                     id="price"
                     type="number"
@@ -365,7 +365,7 @@ export function Services() {
                   <div className="flex items-center justify-between pt-2 border-t">
                     <div className="flex items-center gap-2">
                       <DollarSign className="w-5 h-5 text-green-600" />
-                      <span className="text-xl font-bold text-gray-900">${service.price}</span>
+                      <span className="text-xl font-bold text-gray-900">₪{service.price}</span>
                     </div>
                     <div className="flex items-center gap-2 text-gray-600">
                       <Clock className="w-4 h-4" />

@@ -262,7 +262,7 @@ export function Appointments() {
                       />
                       <div className="flex-1">
                         <p className="font-medium text-sm">{service.title}</p>
-                        <p className="text-xs text-gray-600">${service.price} • {service.duration_minutes}min</p>
+                        <p className="text-xs text-gray-600">₪{service.price} • {service.duration_minutes}min</p>
                       </div>
                     </label>
                   ))}
@@ -415,8 +415,7 @@ export function Appointments() {
                             {totalDuration} mins
                           </div>
                           <div className="flex items-center gap-1">
-                            <DollarSign className="w-4 h-4" />
-                            ${totalPrice}
+                            ₪{totalPrice}
                           </div>
                         </div>
                         <p className="text-sm text-gray-700 mt-2">

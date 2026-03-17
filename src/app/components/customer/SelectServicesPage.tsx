@@ -191,9 +191,8 @@ export function SelectServicesPage() {
                                   <Clock className="w-4 h-4 mr-1" />
                                   {service.duration_minutes} min
                                 </span>
-                                <span className="flex items-center text-sm font-semibold text-green-700">
-                                  <DollarSign className="w-4 h-4 mr-1" />
-                                  {service.price}
+                                 <span className="flex items-center text-sm font-semibold text-green-700">
+                                  ₪{service.price}
                                 </span>
                               </div>
                             </div>
@@ -223,7 +222,7 @@ export function SelectServicesPage() {
                 </p>
                 <div className="flex items-center gap-4 mt-1">
                   <span className="text-sm font-semibold text-slate-900">
-                    Total: ${totalPrice}
+                    Total: ₪{totalPrice}
                   </span>
                   <span className="text-sm text-slate-600">
                     {totalDuration} minutes

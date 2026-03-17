@@ -14,7 +14,7 @@ export function Settings() {
     businessEmail: 'contact@barbergo.com',
     businessPhone: '+966 50 000 0000',
     address: 'Riyadh, Saudi Arabia',
-    currency: 'USD',
+    currency: 'ILS',
     timezone: 'Asia/Riyadh',
     workingHoursStart: '09:00',
     workingHoursEnd: '22:00',
@@ -291,7 +291,7 @@ export function Settings() {
               </div>
               {settings.booking.requireDeposit && (
                 <div className="space-y-2 pl-4 border-l-2 border-blue-500">
-                  <Label htmlFor="depositAmount">Deposit Amount ($)</Label>
+                  <Label htmlFor="depositAmount">Deposit Amount (₪)</Label>
                   <Input
                     id="depositAmount"
                     type="number"

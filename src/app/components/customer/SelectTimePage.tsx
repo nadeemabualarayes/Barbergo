@@ -173,7 +173,7 @@ export function SelectTimePage() {
                 </div>
                 <div>
                   <p className="text-sm text-slate-600">Total Price</p>
-                  <p className="font-medium text-green-700">${totalPrice}</p>
+                  <p className="font-medium text-green-700">₪{totalPrice}</p>
                 </div>
               </div>
             </div>

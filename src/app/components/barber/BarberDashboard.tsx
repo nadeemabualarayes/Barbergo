@@ -192,7 +192,7 @@ export function BarberDashboard() {
               <DollarSign className="w-4 h-4 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${stats.todayEarnings}</div>
+              <div className="text-2xl font-bold">₪{stats.todayEarnings}</div>
               <p className="text-xs text-slate-600 mt-1">From completed appointments</p>
             </CardContent>
           </Card>
@@ -275,8 +275,8 @@ export function BarberDashboard() {
                         </div>
                         
                         <div className="flex items-center gap-3">
-                          <span className="text-sm font-semibold text-green-700">
-                            ${appointment.totalPrice}
+                           <span className="text-sm font-semibold text-green-700">
+                            ₪{appointment.totalPrice}
                           </span>
                           <Badge className={getStatusColor(appointment.status)}>
                             {appointment.status}

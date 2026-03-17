@@ -99,7 +99,7 @@ export function Analytics() {
               <p className="text-sm font-medium text-gray-600">Total Revenue</p>
               <DollarSign className="w-5 h-5 text-green-600" />
             </div>
-            <p className="text-3xl font-bold text-gray-900">${analytics.total_revenue}</p>
+            <p className="text-3xl font-bold text-gray-900">₪{analytics.total_revenue}</p>
             <div className="flex items-center gap-1 mt-2">
               <TrendingUp className="w-4 h-4 text-green-600" />
               <span className="text-sm text-green-600 font-medium">
@@ -142,7 +142,7 @@ export function Analytics() {
               <p className="text-sm font-medium text-gray-600">Avg. Appointment Value</p>
               <TrendingUp className="w-5 h-5 text-orange-600" />
             </div>
-            <p className="text-3xl font-bold text-gray-900">${analytics.avg_appointment_value}</p>
+            <p className="text-3xl font-bold text-gray-900">₪{analytics.avg_appointment_value}</p>
             <p className="text-sm text-gray-600 mt-2">Per booking</p>
           </CardContent>
         </Card>
@@ -170,7 +170,7 @@ export function Analytics() {
                   dataKey="revenue" 
                   stroke="#3B82F6" 
                   strokeWidth={2}
-                  name="Revenue ($)"
+                  name="Revenue (₪)"
                 />
                 <Line 
                   yAxisId="right"
@@ -227,7 +227,7 @@ export function Analytics() {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="revenue" fill="#3B82F6" name="Revenue ($)" />
+              <Bar dataKey="revenue" fill="#3B82F6" name="Revenue (₪)" />
               <Bar dataKey="appointments" fill="#8B5CF6" name="Appointments" />
             </BarChart>
           </ResponsiveContainer>
@@ -263,10 +263,10 @@ export function Analytics() {
                       </div>
                     </td>
                     <td className="py-4 px-4 text-center font-semibold">{barber.appointments}</td>
-                    <td className="py-4 px-4 text-center font-semibold text-green-700">${barber.revenue}</td>
-                    <td className="py-4 px-4 text-center font-semibold text-blue-700">${barber.commission}</td>
+                    <td className="py-4 px-4 text-center font-semibold text-green-700">₪{barber.revenue}</td>
+                    <td className="py-4 px-4 text-center font-semibold text-blue-700">₪{barber.commission}</td>
                     <td className="py-4 px-4 text-center font-semibold text-gray-900">
-                      ${barber.revenue - barber.commission}
+                      ₪{barber.revenue - barber.commission}
                     </td>
                   </tr>
                 ))}
