@@ -123,9 +123,9 @@ function toDate(value: Date | string) {
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocale] = useState<Locale>(() => {
-    if (typeof window === 'undefined') return 'en';
+    if (typeof window === 'undefined') return 'ar';
     const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
-    return stored === 'ar' || stored === 'en' ? stored : 'en';
+    return stored === 'ar' || stored === 'en' ? stored : 'ar';
   });
 
   const direction: Direction = locale === 'ar' ? 'rtl' : 'ltr';
