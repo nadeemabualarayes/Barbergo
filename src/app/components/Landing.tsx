@@ -1,166 +1,209 @@
 import { useNavigate } from 'react-router';
-import { Scissors, Shield, UserCog, Users } from 'lucide-react';
+import { ArrowRight, Scissors, Shield, Sparkles, UserCog, Users } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { LanguageToggle } from './LanguageToggle';
 import { Button } from './ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 
 export function Landing() {
   const navigate = useNavigate();
-  const { locale, t } = useI18n();
+  const { locale, direction } = useI18n();
 
   const copy =
     locale === 'ar'
       ? {
-          tagline: 'خدمات عناية رجالية مميزة',
-          heroTitle: 'أهلا بك في باربر جو',
-          heroDescription: 'نظامك المتكامل لإدارة أعمال الحلاقة والحجامة والعناية بالبشرة',
-          customerPortal: 'بوابة العملاء',
-          customerDescription: 'احجز مواعيدك وأدر جلسات العناية الخاصة بك',
-          bookAppointment: 'احجز موعدا',
-          barberPortal: 'بوابة الحلاقين',
-          barberDescription: 'أدر قائمة اليوم وتابع أرباحك',
-          adminPortal: 'بوابة الإدارة',
-          adminDescription: 'إدارة كاملة للأعمال والتحليلات',
-          adminProvided: 'بيانات الدخول يوفرها المدير',
-          servicesTitle: 'خدماتنا',
-          barberingTitle: 'الحلاقة',
-          barberingDescription: 'قصات شعر احترافية وتدريجات وتصفيف',
-          cuppingTitle: 'الحجامة',
-          cuppingDescription: 'علاج تقليدي لتحسين الصحة والعافية',
-          skincareTitle: 'العناية بالبشرة',
-          skincareDescription: 'جلسات وجه وعناية متقدمة',
-          footer: 'نظام شامل لإدارة الأعمال',
-          staffLogin: 'دخول الموظفين',
-          adminLogin: 'دخول الإدارة',
+          eyebrow: 'منصة عناية رجالية فاخرة',
+          title: 'تجربة حجز وإدارة أنيقة لصالونك الحديث',
+          description:
+            'واجهة هادئة ومرنة لإدارة الحلاقة والحجامة والعناية بالبشرة، مع تجربة حجز مباشرة وأسلوب بصري راق يركز على الراحة والوضوح.',
+          ambience: 'أجواء فاخرة، تنظيم مرن، ومساحة مريحة للعين.',
+          customerTitle: 'الحجز المباشر',
+          customerDescription: 'اسم ورقم هاتف فقط، ثم اختيار الخدمة والحلاق والوقت المناسب.',
+          customerAction: 'ابدأ الحجز',
+          barberTitle: 'بوابة الحلاقين',
+          barberDescription: 'واجهة يومية واضحة لمتابعة المواعيد والجدول والأرباح.',
+          barberAction: 'دخول الموظفين',
+          adminTitle: 'لوحة الإدارة',
+          adminDescription: 'إدارة شاملة للخدمات والموظفين والعملاء والتحليلات.',
+          adminAction: 'دخول الإدارة',
+          servicesTitle: 'الخدمات الأساسية',
+          barbering: 'قصات دقيقة وتصفيف احترافي',
+          cupping: 'جلسات حجامة وعناية علاجية',
+          skincare: 'عناية بالبشرة ولمسات نهائية',
+          flexibleTitle: 'واجهة مرنة وعصرية',
+          flexibleDescription:
+            'مصممة لتبقى واضحة على الجوال وسطح المكتب، مع تباين مريح وألوان دافئة ومساحات تنفس كبيرة.',
+          tagline: 'باربر جو',
+          subtagline: 'أسلوب بصري راق لخدمات العناية الرجالية',
         }
       : {
-          tagline: "Premium Men's Grooming Services",
-          heroTitle: 'Welcome to BarberGo',
-          heroDescription:
-            'Your complete business management system for barbering, cupping (hajama), and skin care services',
-          customerPortal: 'Customer Portal',
-          customerDescription: 'Book appointments and manage your grooming sessions',
-          bookAppointment: 'Book Appointment',
-          barberPortal: 'Barber Portal',
-          barberDescription: 'Manage your daily queue and track earnings',
-          adminPortal: 'Admin Portal',
-          adminDescription: 'Full business management and analytics',
-          adminProvided: 'Credentials provided by admin',
-          servicesTitle: 'Our Services',
-          barberingTitle: 'Barbering',
-          barberingDescription: 'Professional haircuts, fades, and styling services',
-          cuppingTitle: 'Cupping (Hajama)',
-          cuppingDescription: 'Traditional therapeutic treatment for wellness',
-          skincareTitle: 'Skin Care',
-          skincareDescription: 'Premium facial treatments and grooming care',
-          footer: 'Comprehensive Business Management System',
-          staffLogin: 'Staff Login',
-          adminLogin: 'Admin Login',
+          eyebrow: 'Premium Men’s Grooming Platform',
+          title: 'An elegant booking and operations hub for the modern barbershop',
+          description:
+            'A calmer, more flexible experience for barbering, cupping, and skin care services, with direct customer booking and a refined visual tone built for comfort.',
+          ambience: 'Luxury atmosphere, flexible structure, and generous negative space.',
+          customerTitle: 'Direct Booking',
+          customerDescription: 'Name and phone number only, then choose services, barber, and appointment time.',
+          customerAction: 'Book Now',
+          barberTitle: 'Barber Portal',
+          barberDescription: 'A focused daily workspace for appointments, schedule management, and earnings.',
+          barberAction: 'Staff Login',
+          adminTitle: 'Admin Portal',
+          adminDescription: 'A complete control room for services, staff, customers, and business analytics.',
+          adminAction: 'Admin Login',
+          servicesTitle: 'Core Services',
+          barbering: 'Precision cuts and elevated styling',
+          cupping: 'Cupping sessions and therapeutic care',
+          skincare: 'Skin treatments and finishing care',
+          flexibleTitle: 'Modern and Flexible',
+          flexibleDescription:
+            'Built to feel clear on both desktop and mobile, with soft contrast, warm tones, and plenty of room to breathe.',
+          tagline: 'BarberGo',
+          subtagline: 'A refined visual system for premium men’s grooming',
         };
 
+  const portals = [
+    {
+      title: copy.customerTitle,
+      description: copy.customerDescription,
+      action: copy.customerAction,
+      icon: Users,
+      accent: 'from-[#d4b06a] via-[#f0d59d] to-[#c89b45]',
+      surface: 'bg-[linear-gradient(180deg,rgba(28,24,20,0.95),rgba(20,18,16,0.88))]',
+      border: 'border-[#c89b45]/35',
+      actionClass:
+        'bg-[linear-gradient(135deg,#d4b06a,#f1ddb4)] text-[#17130f] hover:brightness-105',
+      onClick: () => navigate('/customer/book'),
+    },
+    {
+      title: copy.barberTitle,
+      description: copy.barberDescription,
+      action: copy.barberAction,
+      icon: UserCog,
+      accent: 'from-[#7b5b2a] via-[#d4b06a] to-[#f5e6c3]',
+      surface: 'bg-[linear-gradient(180deg,rgba(21,21,19,0.92),rgba(17,17,16,0.86))]',
+      border: 'border-[#f1ddb4]/20',
+      actionClass:
+        'border border-[#d4b06a]/35 bg-[#1b1814]/80 text-[#f6e9cc] hover:bg-[#241f19]',
+      onClick: () => navigate('/barber/login'),
+    },
+    {
+      title: copy.adminTitle,
+      description: copy.adminDescription,
+      action: copy.adminAction,
+      icon: Shield,
+      accent: 'from-[#b88b3d] via-[#d9bf84] to-[#f7edd5]',
+      surface: 'bg-[linear-gradient(180deg,rgba(24,22,19,0.94),rgba(18,17,15,0.88))]',
+      border: 'border-[#d9bf84]/24',
+      actionClass:
+        'border border-[#d9bf84]/35 bg-[#151311]/82 text-[#f6e9cc] hover:bg-[#1e1a16]',
+      onClick: () => navigate('/login'),
+    },
+  ];
+
+  const serviceHighlights = [copy.barbering, copy.cupping, copy.skincare];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <header className="border-b border-slate-700 bg-slate-900/50 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center">
-                <Scissors className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-white">{t('common.appName')}</h1>
-                <p className="text-slate-400 text-sm">{copy.tagline}</p>
-              </div>
+    <div
+      className="relative min-h-screen overflow-hidden bg-[#0f0d0b] text-[#f6e9cc]"
+      style={{ fontFamily: locale === 'ar' ? '"Segoe UI", Tahoma, sans-serif' : '"Georgia", "Times New Roman", serif' }}
+    >
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#2f2618_0%,#14110e_38%,#0b0908_75%)]" />
+        <div className="absolute -top-24 left-[8%] h-72 w-72 rounded-full bg-[#c89b45]/12 blur-3xl" />
+        <div className="absolute top-[20%] right-[12%] h-96 w-80 rounded-full bg-[#f0d59d]/8 blur-3xl" />
+        <div className="absolute bottom-[8%] left-[18%] h-72 w-72 rounded-full bg-[#6d5531]/18 blur-3xl" />
+        <div className="absolute inset-x-0 top-0 h-full bg-[linear-gradient(90deg,rgba(255,255,255,0.02),transparent_20%,transparent_80%,rgba(255,255,255,0.02))]" />
+        <div className="absolute left-[12%] top-[14%] h-64 w-48 rounded-[2rem] border border-white/6 bg-white/4 blur-[2px]" />
+        <div className="absolute right-[14%] top-[18%] h-72 w-52 rounded-[2.5rem] border border-white/6 bg-white/4 blur-[1px]" />
+        <div className="absolute left-[28%] bottom-[14%] h-52 w-64 rounded-[2rem] border border-white/6 bg-white/3 blur-[2px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,7,6,0.26),rgba(8,7,6,0.72))]" />
+      </div>
+
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 pb-12 pt-6 md:px-8 lg:px-10">
+        <header className="mx-auto flex w-full max-w-6xl items-center justify-between rounded-full border border-white/10 bg-[#1a1714]/72 px-4 py-3 backdrop-blur-xl md:px-6">
+          <div className="flex items-center gap-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[linear-gradient(135deg,#b88b3d,#f1ddb4)] shadow-[0_12px_40px_rgba(200,155,69,0.22)]">
+              <Scissors className="h-7 w-7 text-[#16120d]" />
             </div>
-            <LanguageToggle />
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 py-16">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold text-white mb-4">{copy.heroTitle}</h2>
-          <p className="text-xl text-slate-300 max-w-2xl mx-auto">{copy.heroDescription}</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          <Card className="bg-slate-800/50 border-slate-700 hover:border-red-600 transition-all hover:shadow-xl hover:shadow-red-600/20">
-            <CardHeader className="text-center">
-              <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-white" />
-              </div>
-              <CardTitle className="text-white text-2xl">{copy.customerPortal}</CardTitle>
-              <CardDescription className="text-slate-400">{copy.customerDescription}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button className="w-full bg-red-600 hover:bg-red-700" onClick={() => navigate('/customer/book')}>
-                {copy.bookAppointment}
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-800/50 border-slate-700 hover:border-blue-600 transition-all hover:shadow-xl hover:shadow-blue-600/20">
-            <CardHeader className="text-center">
-              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <UserCog className="w-8 h-8 text-white" />
-              </div>
-              <CardTitle className="text-white text-2xl">{copy.barberPortal}</CardTitle>
-              <CardDescription className="text-slate-400">{copy.barberDescription}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => navigate('/barber/login')}>
-                {copy.staffLogin}
-              </Button>
-              <p className="text-xs text-center text-slate-500">{copy.adminProvided}</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-800/50 border-slate-700 hover:border-green-600 transition-all hover:shadow-xl hover:shadow-green-600/20">
-            <CardHeader className="text-center">
-              <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-8 h-8 text-white" />
-              </div>
-              <CardTitle className="text-white text-2xl">{copy.adminPortal}</CardTitle>
-              <CardDescription className="text-slate-400">{copy.adminDescription}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button className="w-full bg-green-600 hover:bg-green-700" onClick={() => navigate('/login')}>
-                {copy.adminLogin}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="mt-20 text-center">
-          <h3 className="text-2xl font-bold text-white mb-8">{copy.servicesTitle}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <div className="p-6 bg-slate-800/30 rounded-lg border border-slate-700">
-              <Scissors className="w-10 h-10 text-red-600 mx-auto mb-3" />
-              <h4 className="text-lg font-semibold text-white mb-2">{copy.barberingTitle}</h4>
-              <p className="text-slate-400 text-sm">{copy.barberingDescription}</p>
-            </div>
-            <div className="p-6 bg-slate-800/30 rounded-lg border border-slate-700">
-              <div className="w-10 h-10 bg-red-600 rounded-full mx-auto mb-3 flex items-center justify-center">
-                <span className="text-white text-xl">*</span>
-              </div>
-              <h4 className="text-lg font-semibold text-white mb-2">{copy.cuppingTitle}</h4>
-              <p className="text-slate-400 text-sm">{copy.cuppingDescription}</p>
-            </div>
-            <div className="p-6 bg-slate-800/30 rounded-lg border border-slate-700">
-              <Users className="w-10 h-10 text-red-600 mx-auto mb-3" />
-              <h4 className="text-lg font-semibold text-white mb-2">{copy.skincareTitle}</h4>
-              <p className="text-slate-400 text-sm">{copy.skincareDescription}</p>
+            <div>
+              <p className="text-[1.9rem] font-semibold tracking-tight text-[#fff8eb]">{copy.tagline}</p>
+              <p className="text-sm text-[#d7c7a6]/80">{copy.subtagline}</p>
             </div>
           </div>
-        </div>
-      </main>
+          <LanguageToggle />
+        </header>
 
-      <footer className="border-t border-slate-700 mt-20">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <p className="text-center text-slate-500 text-sm">{`© 2026 ${t('common.appName')} - ${copy.footer}`}</p>
-        </div>
-      </footer>
+        <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center justify-center py-14 text-center md:py-20">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#d4b06a]/25 bg-[#1b1712]/70 px-4 py-2 text-xs uppercase tracking-[0.28em] text-[#d9bf84] backdrop-blur-lg">
+            <Sparkles className="h-3.5 w-3.5" />
+            <span>{copy.eyebrow}</span>
+          </div>
+
+          <div className="max-w-4xl space-y-6">
+            <h1
+              className="text-5xl font-semibold leading-tight text-[#fff7e7] md:text-7xl"
+              style={{ fontFamily: locale === 'ar' ? '"Segoe UI", Tahoma, sans-serif' : '"Baskerville Old Face", "Palatino Linotype", serif' }}
+            >
+              {copy.title}
+            </h1>
+            <p className="mx-auto max-w-3xl text-lg leading-8 text-[#dfd1b5]/88 md:text-xl">{copy.description}</p>
+            <p className="mx-auto max-w-2xl text-sm uppercase tracking-[0.28em] text-[#cba764]/80">{copy.ambience}</p>
+          </div>
+
+          <div className="mt-14 grid w-full gap-6 md:grid-cols-3">
+            {portals.map((portal) => (
+              <section
+                key={portal.title}
+                className={`group relative overflow-hidden rounded-[2rem] border ${portal.border} ${portal.surface} p-7 text-left shadow-[0_18px_80px_rgba(0,0,0,0.26)] backdrop-blur-2xl transition-transform duration-300 hover:-translate-y-1`}
+              >
+                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${portal.accent}`} />
+                <div className="flex items-start justify-between gap-4">
+                  <div className="space-y-4">
+                    <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${portal.accent}`}>
+                      <portal.icon className="h-7 w-7 text-[#17130f]" />
+                    </div>
+                    <div className="space-y-3">
+                      <h2 className="text-3xl font-semibold text-[#fff7e7]">{portal.title}</h2>
+                      <p className="min-h-[88px] text-base leading-7 text-[#decfb0]/82">{portal.description}</p>
+                    </div>
+                  </div>
+                </div>
+                <Button
+                  className={`mt-8 h-12 w-full rounded-full text-sm font-semibold tracking-[0.08em] ${portal.actionClass}`}
+                  onClick={portal.onClick}
+                >
+                  <span>{portal.action}</span>
+                  <ArrowRight className={`ml-2 h-4 w-4 ${direction === 'rtl' ? 'rotate-180' : ''}`} />
+                </Button>
+              </section>
+            ))}
+          </div>
+
+          <div className="mt-16 w-full rounded-[2rem] border border-white/8 bg-[#171411]/68 p-6 backdrop-blur-xl md:p-8">
+            <div className="mb-6 flex flex-col items-center gap-3 text-center">
+              <p className="text-xs uppercase tracking-[0.3em] text-[#cba764]">{copy.servicesTitle}</p>
+              <h3
+                className="text-2xl font-semibold text-[#fff7e7] md:text-3xl"
+                style={{ fontFamily: locale === 'ar' ? '"Segoe UI", Tahoma, sans-serif' : '"Baskerville Old Face", "Palatino Linotype", serif' }}
+              >
+                {copy.flexibleTitle}
+              </h3>
+              <p className="max-w-3xl text-sm leading-7 text-[#decfb0]/78 md:text-base">{copy.flexibleDescription}</p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              {serviceHighlights.map((item) => (
+                <div
+                  key={item}
+                  className="rounded-[1.6rem] border border-white/7 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] px-5 py-6 text-center text-sm leading-7 text-[#f3e7ca]/88 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
