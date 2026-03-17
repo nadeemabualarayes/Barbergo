@@ -94,11 +94,11 @@ export function SelectTimePage() {
 
   const generateMockSlots = () => {
     const slots = [];
-    for (let hour = 9; hour < 18; hour++) {
+    for (let hour = 0; hour < 24; hour++) {
       slots.push(`${hour.toString().padStart(2, '0')}:00`);
       slots.push(`${hour.toString().padStart(2, '0')}:30`);
     }
-    return slots.filter((_, index) => index % 3 !== 0);
+    return slots;
   };
 
   const handleContinue = () => {
