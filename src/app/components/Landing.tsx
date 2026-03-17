@@ -130,7 +130,9 @@ export function Landing() {
               <p className="text-sm text-[#d7c7a6]/80">{copy.subtagline}</p>
             </div>
           </div>
-          <LanguageToggle />
+          <div className="hidden md:block text-xs uppercase tracking-[0.22em] text-[#cba764]/72">
+            {copy.eyebrow}
+          </div>
         </header>
 
         <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center justify-center py-14 text-center md:py-20">
@@ -148,6 +150,9 @@ export function Landing() {
             </h1>
             <p className="mx-auto max-w-3xl text-lg leading-8 text-[#dfd1b5]/88 md:text-xl">{copy.description}</p>
             <p className="mx-auto max-w-2xl text-sm uppercase tracking-[0.28em] text-[#cba764]/80">{copy.ambience}</p>
+            <div className="pt-2">
+              <LanguageToggle variant="immersive" className="mx-auto" />
+            </div>
           </div>
 
           <div className="mt-14 grid w-full gap-6 md:grid-cols-3">
