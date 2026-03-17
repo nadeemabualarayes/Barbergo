@@ -1,49 +1,87 @@
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { 
-  Calendar, 
-  Users, 
-  DollarSign, 
-  TrendingUp, 
-  Clock,
-  Scissors,
-  CheckCircle,
-  XCircle
-} from 'lucide-react';
-import { getAppointments, getAnalytics } from '../lib/api';
 import { format } from 'date-fns';
+import {
+  Calendar,
+  CheckCircle,
+  Clock,
+  DollarSign,
+  Scissors,
+  TrendingUp,
+  Users,
+  XCircle,
+} from 'lucide-react';
+import { getAnalytics, getAppointments } from '../lib/api';
+import { Alert, AlertDescription } from './ui/alert';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+
+type DashboardStats = {
+  todayAppointments: number;
+  todayRevenue: number;
+  activeBarbers: number;
+  completionRate: number;
+  upcomingAppointments: any[];
+};
+
+const EMPTY_STATS: DashboardStats = {
+  todayAppointments: 0,
+  todayRevenue: 0,
+  activeBarbers: 0,
+  completionRate: 0,
+  upcomingAppointments: [],
+};
 
 export function Dashboard() {
-  const [stats, setStats] = useState({
-    todayAppointments: 0,
-    todayRevenue: 0,
-    activeBarbers: 0,
-    completionRate: 0,
-    upcomingAppointments: [] as any[],
-  });
+  const [stats, setStats] = useState<DashboardStats>(EMPTY_STATS);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     loadDashboardData();
   }, []);
 
   const loadDashboardData = async () => {
+    setLoading(true);
+    setErrorMessage('');
+
+    const today = format(new Date(), 'yyyy-MM-dd');
+
+    const [appointmentsResult, analyticsResult] = await Promise.allSettled([
+      getAppointments({ date: today }),
+      getAnalytics({ start_date: today, end_date: today }),
+    ]);
+
+    if (appointmentsResult.status === 'rejected') {
+      console.error('Dashboard appointments request failed:', appointmentsResult.reason);
+    }
+
+    if (analyticsResult.status === 'rejected') {
+      console.error('Dashboard analytics request failed:', analyticsResult.reason);
+    }
+
+    if (appointmentsResult.status !== 'fulfilled' || analyticsResult.status !== 'fulfilled') {
+      const failures = [
+        appointmentsResult.status !== 'fulfilled' ? 'appointments' : null,
+        analyticsResult.status !== 'fulfilled' ? 'analytics' : null,
+      ].filter(Boolean);
+
+      setStats(EMPTY_STATS);
+      setErrorMessage(
+        `Unable to load live dashboard data${failures.length ? ` from ${failures.join(' and ')}` : ''}.`,
+      );
+      setLoading(false);
+      return;
+    }
+
     try {
-      const today = format(new Date(), 'yyyy-MM-dd');
-      const appointments = await getAppointments({ date: today });
-      const analytics = await getAnalytics({
-        start_date: today,
-        end_date: today,
-      });
+      const appointments = Array.isArray(appointmentsResult.value) ? appointmentsResult.value : [];
+      const analytics = analyticsResult.value || {};
 
       const todayRevenue = appointments
         .filter((apt: any) => apt.status === 'completed')
         .reduce((sum: number, apt: any) => sum + (apt.total_price || apt.totalPrice || 0), 0);
 
       const completedCount = appointments.filter((apt: any) => apt.status === 'completed').length;
-      const completionRate = appointments.length > 0 
-        ? (completedCount / appointments.length) * 100 
-        : 0;
+      const completionRate = appointments.length > 0 ? (completedCount / appointments.length) * 100 : 0;
 
       const upcoming = appointments
         .filter((apt: any) => apt.status === 'pending' || apt.status === 'confirmed')
@@ -52,8 +90,8 @@ export function Dashboard() {
             const raw = apt.start_time || apt.startTime;
             if (!raw) return new Date(0);
             let d = new Date(raw);
-            if (isNaN(d.getTime())) d = new Date(`${apt.date}T${raw}`);
-            return isNaN(d.getTime()) ? new Date(0) : d;
+            if (Number.isNaN(d.getTime()) && apt.date) d = new Date(`${apt.date}T${raw}`);
+            return Number.isNaN(d.getTime()) ? new Date(0) : d;
           };
           return parseDate(a).getTime() - parseDate(b).getTime();
         })
@@ -67,34 +105,9 @@ export function Dashboard() {
         upcomingAppointments: upcoming,
       });
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
-      // Set demo data
-      setStats({
-        todayAppointments: 12,
-        todayRevenue: 485,
-        activeBarbers: 4,
-        completionRate: 87,
-        upcomingAppointments: [
-          {
-            id: '1',
-            customer_name: 'Ahmed Ali',
-            barber_name: 'Mohammed',
-            service_titles: ['Haircut', 'Beard Trim'],
-            start_time: new Date().toISOString(),
-            total_price: 45,
-            status: 'confirmed'
-          },
-          {
-            id: '2',
-            customer_name: 'Omar Hassan',
-            barber_name: 'Youssef',
-            service_titles: ['Hajama'],
-            start_time: new Date(Date.now() + 30 * 60000).toISOString(),
-            total_price: 60,
-            status: 'pending'
-          },
-        ],
-      });
+      console.error('Dashboard data normalization failed:', error);
+      setStats(EMPTY_STATS);
+      setErrorMessage('Live dashboard data was returned in an unexpected format.');
     } finally {
       setLoading(false);
     }
@@ -102,14 +115,14 @@ export function Dashboard() {
 
   const statCards = [
     {
-      title: 'Today\'s Appointments',
+      title: "Today's Appointments",
       value: stats.todayAppointments,
       icon: Calendar,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
     },
     {
-      title: 'Today\'s Revenue',
+      title: "Today's Revenue",
       value: `₪${stats.todayRevenue}`,
       icon: DollarSign,
       color: 'text-green-600',
@@ -162,7 +175,12 @@ export function Dashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Stats Grid */}
+      {errorMessage && (
+        <Alert variant="destructive">
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((stat) => (
           <Card key={stat.title}>
@@ -181,31 +199,37 @@ export function Dashboard() {
         ))}
       </div>
 
-      {/* Upcoming Appointments */}
       <Card>
         <CardHeader>
           <CardTitle>Upcoming Appointments</CardTitle>
         </CardHeader>
         <CardContent>
           {stats.upcomingAppointments.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">No upcoming appointments</p>
+            <p className="text-gray-500 text-center py-8">
+              {errorMessage ? 'Live data is unavailable right now.' : 'No upcoming appointments'}
+            </p>
           ) : (
             <div className="space-y-4">
               {stats.upcomingAppointments.map((appointment) => {
                 const customerName = appointment.customer_name || appointment.customerName || 'Customer';
                 const barberName = appointment.barber_name || appointment.barberName || 'Barber';
-                const serviceTitles = appointment.service_titles || appointment.serviceTitles || (appointment.services?.map((s: any) => s.title || s.name) || []);
+                const serviceTitles =
+                  appointment.service_titles ||
+                  appointment.serviceTitles ||
+                  (appointment.services?.map((s: any) => s.title || s.name) || []);
                 const totalPrice = appointment.total_price || appointment.totalPrice || 0;
-                
+
                 let formattedTime = 'TBD';
                 try {
                   const raw = appointment.start_time || appointment.startTime;
                   if (raw) {
                     let d = new Date(raw);
-                    if (isNaN(d.getTime())) d = new Date(`${appointment.date}T${raw}`);
-                    if (!isNaN(d.getTime())) formattedTime = format(d, 'h:mm a');
+                    if (Number.isNaN(d.getTime()) && appointment.date) d = new Date(`${appointment.date}T${raw}`);
+                    if (!Number.isNaN(d.getTime())) formattedTime = format(d, 'h:mm a');
                   }
-                } catch (e) {}
+                } catch (error) {
+                  console.error('Dashboard appointment time formatting failed:', error);
+                }
 
                 return (
                   <div
@@ -218,18 +242,12 @@ export function Dashboard() {
                       </div>
                       <div>
                         <p className="font-semibold text-gray-900">{customerName}</p>
-                        <p className="text-sm text-gray-600">
-                          {serviceTitles.join(', ')} • {barberName}
-                        </p>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {formattedTime}
-                        </p>
+                        <p className="text-sm text-gray-600">{serviceTitles.join(', ')} • {barberName}</p>
+                        <p className="text-xs text-gray-500 mt-1">{formattedTime}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-lg font-bold text-gray-900">
-                        ₪{totalPrice}
-                      </span>
+                      <span className="text-lg font-bold text-gray-900">₪{totalPrice}</span>
                       {getStatusIcon(appointment.status)}
                     </div>
                   </div>
@@ -240,7 +258,6 @@ export function Dashboard() {
         </CardContent>
       </Card>
 
-      {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="cursor-pointer hover:shadow-lg transition-shadow">
           <CardContent className="p-6 text-center">

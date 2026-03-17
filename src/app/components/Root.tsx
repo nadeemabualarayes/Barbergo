@@ -13,20 +13,25 @@ import {
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
-
-const navigation = [
-  { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { name: 'Appointments', href: '/admin/appointments', icon: Calendar },
-  { name: 'Barbers', href: '/admin/barbers', icon: Scissors },
-  { name: 'Services', href: '/admin/services', icon: Briefcase },
-  { name: 'Customers', href: '/admin/customers', icon: Users },
-  { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
-  { name: 'Settings', href: '/admin/settings', icon: Settings },
-];
+import { useI18n } from '../i18n';
+import { LanguageToggle } from './LanguageToggle';
 
 export function Root() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const { direction, locale, t } = useI18n();
+  const adminUser = locale === 'ar' ? 'مستخدم الإدارة' : 'Admin User';
+  const subtitle = locale === 'ar' ? 'أدر نشاطك بكفاءة' : 'Manage your grooming business efficiently';
+
+  const navigation = [
+    { name: t('nav.dashboard'), href: '/admin', icon: LayoutDashboard },
+    { name: t('nav.appointments'), href: '/admin/appointments', icon: Calendar },
+    { name: t('nav.barbers'), href: '/admin/barbers', icon: Scissors },
+    { name: t('nav.services'), href: '/admin/services', icon: Briefcase },
+    { name: t('nav.customers'), href: '/admin/customers', icon: Users },
+    { name: t('nav.analytics'), href: '/admin/analytics', icon: BarChart3 },
+    { name: t('nav.settings'), href: '/admin/settings', icon: Settings },
+  ];
 
   useEffect(() => {
     // Check if user is authenticated (you can expand this later)
@@ -54,8 +59,8 @@ export function Root() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed top-0 ${direction === 'rtl' ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-full w-64 bg-white border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+          sidebarOpen ? 'translate-x-0' : direction === 'rtl' ? 'translate-x-full' : '-translate-x-full'
         }`}
       >
         <div className="flex flex-col h-full">
@@ -102,7 +107,7 @@ export function Root() {
                 A
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">Admin User</p>
+                <p className="text-sm font-medium text-gray-900 truncate">{adminUser}</p>
                 <p className="text-xs text-gray-500 truncate">admin@barbergo.com</p>
               </div>
             </div>
@@ -112,14 +117,14 @@ export function Root() {
               onClick={handleLogout}
             >
               <LogOut className="w-5 h-5" />
-              <span>Logout</span>
+              <span>{t('common.logout')}</span>
             </Button>
           </div>
         </div>
       </aside>
 
       {/* Main content */}
-      <div className="lg:pl-64">
+      <div className={direction === 'rtl' ? 'lg:pr-64' : 'lg:pl-64'}>
         {/* Top bar */}
         <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 py-4 lg:px-8">
           <div className="flex items-center gap-4">
@@ -130,9 +135,12 @@ export function Root() {
               <Menu className="w-6 h-6" />
             </button>
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-gray-900">Welcome to BarberGo</h1>
-              <p className="text-sm text-gray-600">Manage your grooming business efficiently</p>
+              <h1 className="text-2xl font-bold text-gray-900">{t('common.appName')}</h1>
+              <p className="text-sm text-gray-600">
+                {subtitle}
+              </p>
             </div>
+            <LanguageToggle />
           </div>
         </header>
 

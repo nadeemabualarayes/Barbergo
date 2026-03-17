@@ -6,6 +6,7 @@ import { DayPicker } from "react-day-picker";
 
 import { cn } from "./utils";
 import { buttonVariants } from "./button";
+import { useI18n } from "../../i18n";
 
 function Calendar({
   className,
@@ -13,9 +14,13 @@ function Calendar({
   showOutsideDays = true,
   ...props
 }: React.ComponentProps<typeof DayPicker>) {
+  const { direction, getDateFnsLocale } = useI18n();
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
+      dir={direction}
+      locale={getDateFnsLocale()}
       className={cn("p-3", className)}
       classNames={{
         months: "flex flex-col sm:flex-row gap-2",
@@ -61,10 +66,18 @@ function Calendar({
       }}
       components={{
         IconLeft: ({ className, ...props }) => (
-          <ChevronLeft className={cn("size-4", className)} {...props} />
+          direction === 'rtl' ? (
+            <ChevronRight className={cn("size-4", className)} {...props} />
+          ) : (
+            <ChevronLeft className={cn("size-4", className)} {...props} />
+          )
         ),
         IconRight: ({ className, ...props }) => (
-          <ChevronRight className={cn("size-4", className)} {...props} />
+          direction === 'rtl' ? (
+            <ChevronLeft className={cn("size-4", className)} {...props} />
+          ) : (
+            <ChevronRight className={cn("size-4", className)} {...props} />
+          )
         ),
       }}
       {...props}

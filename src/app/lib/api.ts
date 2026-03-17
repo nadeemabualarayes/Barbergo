@@ -3,17 +3,36 @@ import { projectId, publicAnonKey } from '/utils/supabase/info';
 const API_BASE = `https://${projectId}.supabase.co/functions/v1/make-server-0bdf1ecf`;
 
 async function fetchAPI(endpoint: string, options: RequestInit = {}) {
-  const response = await fetch(`${API_BASE}${endpoint}`, {
+  const url = `${API_BASE}${endpoint}`;
+  const requestOptions = {
     ...options,
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${publicAnonKey}`,
       ...options.headers,
     },
-  });
+  };
+
+  let response: Response;
+  try {
+    response = await fetch(url, requestOptions);
+  } catch (error) {
+    console.error(`API network request failed for ${endpoint}:`, {
+      url,
+      method: options.method || 'GET',
+      error,
+    });
+    throw error;
+  }
 
   if (!response.ok) {
     const errorText = await response.text();
+    console.error(`API responded with error for ${endpoint}:`, {
+      url,
+      method: options.method || 'GET',
+      status: response.status,
+      body: errorText,
+    });
     throw new Error(`API Error: ${response.status} - ${errorText}`);
   }
 

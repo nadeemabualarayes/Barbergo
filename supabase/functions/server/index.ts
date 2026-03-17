@@ -24,6 +24,27 @@ function generateId() {
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
+function getAppointmentDate(appointment: any): string | null {
+  if (typeof appointment?.date === "string" && appointment.date.length >= 10) {
+    return appointment.date.slice(0, 10);
+  }
+
+  if (typeof appointment?.start_time === "string" && appointment.start_time.length >= 10) {
+    return appointment.start_time.slice(0, 10);
+  }
+
+  if (typeof appointment?.startTime === "string") {
+    if (appointment.startTime.length >= 10 && appointment.startTime.includes("-")) {
+      return appointment.startTime.slice(0, 10);
+    }
+    if (typeof appointment?.date === "string" && appointment.date.length >= 10) {
+      return appointment.date.slice(0, 10);
+    }
+  }
+
+  return null;
+}
+
 // Health check endpoint
 app.get("/health", (c) => {
   return c.json({ status: "ok" });
@@ -171,7 +192,7 @@ app.get("/appointments", async (c) => {
     // Apply filters
     if (date) {
       appointments = appointments.filter((apt: any) => 
-        apt.start_time.startsWith(date)
+        getAppointmentDate(apt) === date
       );
     }
     if (barber_id) {
@@ -397,8 +418,19 @@ app.get("/analytics", async (c) => {
     const start_date = c.req.query("start_date");
     const end_date = c.req.query("end_date");
     
-    const appointments = await kv.getByPrefix("appointment:");
+    let appointments = await kv.getByPrefix("appointment:");
     const barbers = await kv.getByPrefix("barber:");
+    const customers = await kv.getByPrefix("customer:");
+
+    if (start_date || end_date) {
+      appointments = appointments.filter((apt: any) => {
+        const datePart = getAppointmentDate(apt);
+        if (!datePart) return false;
+        if (start_date && datePart < start_date) return false;
+        if (end_date && datePart > end_date) return false;
+        return true;
+      });
+    }
     
     // Calculate analytics
     const completedAppointments = appointments.filter((apt: any) => 
@@ -411,17 +443,81 @@ app.get("/analytics", async (c) => {
     );
     
     const activeBarbers = new Set(
-      appointments.map((apt: any) => apt.barber_id)
+      appointments
+        .map((apt: any) => apt.barber_id)
+        .filter((id: any) => typeof id === "string" && id.length > 0)
     ).size;
+
+    const revenueByDayMap = new Map<string, { date: string; revenue: number; appointments: number }>();
+    for (const apt of completedAppointments) {
+      const dateKey = getAppointmentDate(apt);
+      if (!dateKey) continue;
+      const existing = revenueByDayMap.get(dateKey) || {
+        date: dateKey,
+        revenue: 0,
+        appointments: 0,
+      };
+      existing.revenue += apt.total_price || 0;
+      existing.appointments += 1;
+      revenueByDayMap.set(dateKey, existing);
+    }
+
+    const revenueByServiceMap = new Map<string, number>();
+    for (const apt of completedAppointments) {
+      const titles = Array.isArray(apt.service_titles) ? apt.service_titles : [];
+      if (titles.length === 0) {
+        revenueByServiceMap.set("Uncategorized", (revenueByServiceMap.get("Uncategorized") || 0) + (apt.total_price || 0));
+        continue;
+      }
+      const share = (apt.total_price || 0) / titles.length;
+      for (const title of titles) {
+        revenueByServiceMap.set(title, (revenueByServiceMap.get(title) || 0) + share);
+      }
+    }
+
+    const barberRevenueMap = new Map<string, { name: string; revenue: number; appointments: number; commission: number }>();
+    for (const apt of completedAppointments) {
+      const barberId = apt.barber_id || apt.barber_name || "unknown";
+      const barberName = apt.barber_name || barbers.find((barber: any) => barber.id === apt.barber_id)?.name || "Unknown";
+      const existing = barberRevenueMap.get(barberId) || {
+        name: barberName,
+        revenue: 0,
+        appointments: 0,
+        commission: 0,
+      };
+      existing.revenue += apt.total_price || 0;
+      existing.appointments += 1;
+      const commissionRate = Number(
+        barbers.find((barber: any) => barber.id === apt.barber_id)?.commission_rate ?? 50,
+      );
+      existing.commission = existing.revenue * (commissionRate / 100);
+      barberRevenueMap.set(barberId, existing);
+    }
+
+    const topBarbers = Array.from(barberRevenueMap.values()).sort((a, b) => b.revenue - a.revenue).slice(0, 5);
+    const revenueByDay = Array.from(revenueByDayMap.values()).sort((a, b) => a.date.localeCompare(b.date));
+    const revenueByServiceRaw = Array.from(revenueByServiceMap.entries())
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value);
+    const revenueByService = revenueByServiceRaw.map((entry) => ({
+      ...entry,
+      percentage: totalRevenue > 0 ? Number(((entry.value / totalRevenue) * 100).toFixed(1)) : 0,
+    }));
     
     return c.json({
       total_revenue: totalRevenue,
       total_appointments: appointments.length,
       completed_appointments: completedAppointments.length,
       active_barbers: activeBarbers,
+      total_customers: customers.length,
       avg_appointment_value: completedAppointments.length > 0 
         ? totalRevenue / completedAppointments.length 
         : 0,
+      revenue_growth: 0,
+      appointment_growth: 0,
+      revenue_by_day: revenueByDay,
+      revenue_by_service: revenueByService,
+      top_barbers: topBarbers,
     });
   } catch (error) {
     console.error("Error fetching analytics:", error);
